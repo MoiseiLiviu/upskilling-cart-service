@@ -22,4 +22,9 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
   ],
   controllers: [CartController],
 })
-export class CartModule {}
+export class CartModule {
+
+  constructor(private readonly configService: ConfigService) {
+    console.log(`MONGO URL VALUE: ${configService.get<string>('MONGO_URL')}`)
+  }
+}
