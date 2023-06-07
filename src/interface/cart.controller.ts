@@ -26,6 +26,7 @@ import { RemoveItemPort } from '../application/ports/input/remove-item.port';
 import { CartRepository } from '../domain/repositories/cart.repository';
 import { CartMapper } from './cart.mapper';
 import { InitOrderPort } from '../application/ports/output/init-order.port';
+import { LoggerAdapterToken, LoggerPort } from '@nest-upskilling/common/dist';
 
 @Controller()
 export class CartController {
@@ -42,6 +43,8 @@ export class CartController {
     private readonly cartRepository: CartRepository,
     @Inject(INIT_ORDER_ADAPTER_TOKEN)
     private readonly initOrderPort: InitOrderPort,
+    @Inject(LoggerAdapterToken)
+    private readonly loggerPort: LoggerPort,
   ) {}
 
   @GrpcMethod('CartService', 'AddItem')
@@ -88,7 +91,15 @@ export class CartController {
 
   @GrpcMethod('CartService', 'InitOrder')
   async initOrder(payload: InitOrderRequest): Promise<InitOrderResponse> {
+    this.loggerPort.log(
+      'CartController',
+      `Received init order request for user with id ${payload.userId}`,
+    );
     const orderId = await this.initOrderPort.execute(payload.userId);
+    this.loggerPort.log(
+      'CartController',
+      `Order initiated successfully, created order id: ${orderId}`,
+    );
 
     return { orderId };
   }

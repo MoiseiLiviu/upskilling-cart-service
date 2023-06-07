@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CartController } from './interface/cart.controller';
 import { CartApplicationModule } from './application/cart-application.module';
 import { CartInfrastructureModule } from './infrastructure/cart-infrastructure.module';
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -17,14 +17,14 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
         uri: configService.get<string>('MONGO_URL'),
       }),
       inject: [ConfigService],
-    }),    CartApplicationModule,
+    }),
+    CartApplicationModule,
     CartInfrastructureModule,
   ],
   controllers: [CartController],
 })
 export class CartModule {
-
   constructor(private readonly configService: ConfigService) {
-    console.log(`MONGO URL VALUE: ${configService.get<string>('MONGO_URL')}`)
+    console.log(`MONGO URL VALUE: ${configService.get<string>('MONGO_URL')}`);
   }
 }
