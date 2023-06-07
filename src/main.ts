@@ -11,7 +11,7 @@ async function bootstrap() {
       options: {
         package: protobufPackage,
         protoPath: 'node_modules/upskilling-protos/proto/cart.proto',
-        url: 'localhost:5004',
+        url: '0.0.0.0:5004',
       },
     },
   );
