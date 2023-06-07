@@ -14,29 +14,36 @@ import { CheckProductAvailabilityAdapter } from './adapters/product/check-produc
 import { GetProductByIdAdapter } from './adapters/product/get-product-by-id.adapter';
 import { InitOrderAdapter } from './adapters/order/init-order-adapter.service';
 import { LoggerModule } from '@nest-upskilling/common';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     LoggerModule,
     CartDataAccessModule,
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'PRODUCT_PACKAGE',
-        transport: Transport.GRPC,
-        options: {
-          url: 'localhost:5002',
-          package: productProto.protobufPackage,
-          protoPath: 'node_modules/upskilling-protos/proto/product.proto',
-        },
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.GRPC,
+          options: {
+            url: configService.get<string>('PRODUCT_SERVICE_URL'),
+            package: productProto.protobufPackage,
+            protoPath: 'node_modules/upskilling-protos/proto/product.proto',
+          },
+        }),
       },
       {
         name: 'ORDER_PACKAGE',
-        transport: Transport.GRPC,
-        options: {
-          url: 'localhost:5003',
-          package: orderProto.protobufPackage,
-          protoPath: 'node_modules/upskilling-protos/proto/order.proto',
-        },
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.GRPC,
+          options: {
+            url: configService.get<string>('ORDER_SERVICE_URL'),
+            package: orderProto.protobufPackage,
+            protoPath: 'node_modules/upskilling-protos/proto/order.proto',
+          },
+        }),
       },
     ]),
   ],
